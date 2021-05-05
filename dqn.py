@@ -42,7 +42,7 @@ class Agent(object):
         #instance variables
         self.gamma = gamma
         self.epsilon = epsilon
-        self.eps_end = eps_end
+        self.eps_min = eps_end
         self.eps_dec = eps_dec
         self.lr = lr
         self.action_space = [i for i in range(n_actions)]
@@ -59,7 +59,7 @@ class Agent(object):
         self.reward_mem = np.zeros(self.mem_size,dtype=np.float32)
         self.terminal_mem = np.zeros(self.mem_size, dtype=np.bool)
 
-    def store_transitionn(self, state, action, reward, state_, done):
+    def store_transition(self, state, action, reward, state_, done):
         index = self.mem_ctr % self.mem_size
         self.state_mem[index] = state
         self.new_state_mem[index] = state_
@@ -82,7 +82,7 @@ class Agent(object):
         if self.mem_ctr < self.batch_size:
             return 
         self.Q_eval.optimizer.zero_grad()
-        max_mem = min(mem_size)
+        max_mem = min(self.mem_ctr,self.mem_size)
         batch = np.random.choice(max_mem, self.batch_size, replace=False)
         batch_index = np.arange(self.batch_size, dtype=np.int32)
         state_batch = torch.tensor(self.state_mem[batch]).to(self.Q_eval.device)
