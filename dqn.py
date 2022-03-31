@@ -24,7 +24,7 @@ class DQN(nn.Module):
         #loss function
         self.criterion = nn.MSELoss()
 
-        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.to(self.device)
 
 
